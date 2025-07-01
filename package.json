@@ -1,0 +1,17 @@
+{
+  "name": "redibuddy",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.7",
+    "dotenv": "^17.0.0",
+    "express": "~5.1.0",
+    "hbs": "~4.2.0",
+    "morgan": "~1.10.0",
+    "openai": "^5.8.2"
+  }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RediBuddy</title>
+    <link rel="stylesheet" href="./stylesheets/index.css" media="screen,print" >
+    <link rel="icon" href="images/redis-avatar.png" type="image/png" >
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="RediBuddy">
+    <meta name="description" content="Temporary memory, consistent help.">
+    <meta name="keywords" content="Redis, OpenAI, Chatbot">
+
+    <meta property="title" content="RediBuddy">
+    <meta property="description" content="Temporary memory, consistent help.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/booleanhunter/redibuddy">
+    <meta property="og:title" content="RediBuddy">
+    <meta property="og:description" content="Temporary memory, consistent help.">
+    <meta property="og:image" content="https://github.com/booleanhunter/redibuddy/raw/main/images/redis-avatar.png">
+</head>
+<body>
+
+    <div class="header-icons">
+        <a href="https://github.com/booleanhunter/redibuddy" target="_blank" aria-label="GitHub Project" title="View project on Github">
+            <img src="/images/github.svg" alt="GitHub" />
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>RediBuddy</h1>
+        <div class="avatar-container">
+            <img src="images/redis-avatar.png" alt="Assistant Avatar" class="avatar-img" />
+        </div>
+        <p>Temporary memory, consistent help.</p>
+
+        <form id="name-form">
+            <label for="name" style="display:none;">Name</label>
+            <input type="text" id="name" placeholder="Enter your name" required aria-label="Enter your name" />
+            <button type="submit">Start Chat</button>
+        </form>
+
+        <p class="footer-text">
+            Built with <a href="https://redis.io/" target="_blank">Redis</a>, <a href="https://openai.com/" target="_blank">OpenAI</a> & ☕ by <a href="https://github.com/booleanhunter" target="_blank" class="github-link" >booleanhunter</a>
+        </p>
+    </div>
+
+    <script type="text/javascript">
+        const form = document.getElementById('name-form');
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            if (name) {
+                window.location.href = `/app?name=${encodeURIComponent(name)}`;
+            }
+        });
+    </script>
+</body>
+</html>
