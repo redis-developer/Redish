@@ -10,6 +10,7 @@ import {
 import {
     chatData,
     sendChatMessage,
+    endSession,
 } from './chatService.js';
 
 const params = new URLSearchParams(window.location.search);
@@ -76,8 +77,22 @@ chatForm.addEventListener('submit', async (e) => {
 });
 
 document.getElementById('end-session').addEventListener('click', () => {
-    window.location.href = '/';
+    endSession(sessionId, {
+        onLoad: () => {
+            console.log('Ending session...');
+        },
+        onSuccess: (data) => {
+            // Navigate away on success
+            console.log(data);
+            window.location.href = '/';
+        },
+        onError: (err) => {
+            alert('Could not end session: ' + err.message);
+        }
+    });
 });
+
+
 
 // Auto-start with one chat
 newChatBtn.click();

@@ -57,13 +57,13 @@ git clone https://github.com/booleanhunter/redibuddy.git
 cd redibuddy
 ```
 
-### Install dependencies
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### Configure environment variables
+### 3. Configure environment variables
 
 Create a `.env` file at the root:
 
@@ -73,7 +73,7 @@ REDIS_URL=redis://localhost:6379
 SERVER_PORT=3000
 ```
 
-### Start the server
+### 4. Start the server
 
 ```bash
 npm start

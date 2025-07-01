@@ -8,6 +8,7 @@ if (!process.env.OPENAI_API_KEY) {
 const CONFIG = {
     serverPort: process.env.SERVER_PORT || 3000,
     nodeEnv: process.env.NODE_ENV || 'development',
+    redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
     openAiApiKey: process.env.OPENAI_API_KEY,
 };
 

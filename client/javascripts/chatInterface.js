@@ -57,4 +57,3 @@ export function updateChatPreviewWindow(chatId, chatName) {
         li.textContent = chatName;
     }
 }
-

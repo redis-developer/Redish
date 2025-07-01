@@ -79,3 +79,37 @@ export async function sendChatMessage(sessionId, chatId, message, options = {}) 
     }
 }
 
+/**
+ * Ends a user session and deletes their chat history from Redis.
+ *
+ * @param {string} sessionId - The user's session identifier.
+ * @param {Object} [options]
+ * @param {() => void} [options.onLoad]      - Called before the request starts.
+ * @param {() => void} [options.onSuccess]   - Called on successful deletion.
+ * @param {(error: any) => void} [options.onError] - Called on failure.
+ */
+export async function endSession(sessionId, options = {}) {
+    const { onLoad, onSuccess, onError } = options;
+
+    try {
+        onLoad?.();
+
+        const res = await fetch('/ai/chat/end-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId }),
+        });
+
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Unknown error');
+        }
+
+        const data = await res.json();
+        onSuccess?.(data);
+
+    } catch (err) {
+        console.error('Failed to end session:', err);
+        onError?.(err);
+    }
+}
