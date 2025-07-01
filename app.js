@@ -4,7 +4,10 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
+import CONFIG from './config.js';
+
 import indexRouter from './service/api/routes/index.js';
+import aiRouter from './service/api/routes/ai.js';
 
 import { fileURLToPath } from 'url';
 
@@ -25,10 +28,11 @@ app.use(express.static(path.join(__dirname, 'client')));
 
 // initialize routes
 app.use('/', indexRouter);
+app.use('/ai', aiRouter); // Use the AI router for /ai routes
 
 const server = http.createServer(app);
 
-const port = Number(process.env.PORT) || 3000;
+const port = Number(CONFIG.serverPort) || 3000;
 app.set('port', port);
 
 server.on('listening', function() {

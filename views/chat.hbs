@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RediBuddy</title>
+    <link rel="stylesheet" href="./stylesheets/chat.css" media="screen,print" >
+    <link rel="icon" href="images/redis-avatar.png" type="image/png">
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="RediBuddy">
+    <meta name="description" content="Temporary memory, consistent help.">
+    <meta name="keywords" content="Redis, OpenAI, Chatbot">
+
+    <meta property="title" content="RediBuddy">
+    <meta property="description" content="Temporary memory, consistent help.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/booleanhunter/redibuddy">
+    <meta property="og:title" content="RediBuddy">
+    <meta property="og:description" content="Temporary memory, consistent help.">
+    <meta property="og:image" content="https://github.com/booleanhunter/redibuddy/raw/main/images/redis-avatar.png">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <h1>Chats</h1>
+            <ul id="chat-list"></ul>
+            <button id="new-chat">+ New Chat</button>
+        </aside>
+
+        <main class="chat-container">
+            <header class="chat-header">
+                <div id="username-display">
+                    Hello, User
+                </div>
+                <div class="chat-actions">
+                    <a href="https://github.com/booleanhunter/redibuddy/issues" 
+                        target="_blank" 
+                        title="Report an issue on GitHub">
+                        <img src="images/github.svg" alt="GitHub" class="icon" />
+                    </a>
+                    <button id="end-session">
+                        End Session
+                    </button>
+                </div>
+            </header>
+
+            <div class="chat-content-wrapper">
+                <div id="chat-window" class="chat-window">
+                    <!-- Chat messages will be dynamically inserted here -->
+                </div>
+                <form id="chat-form" class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off" required aria-label="Type your message" />
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="/javascripts/index.js" type="module"></script>
+    
+</body>
+
+</html>
