@@ -1,7 +1,7 @@
 import {
     showTypingIndicator,
     removeTypingIndicator,
-    appendMessage,
+    displayMessage,
     updateChatPreviewWindow,
     addChatToSidebar,
     displayActiveChat,
@@ -48,8 +48,10 @@ chatForm.addEventListener('submit', async (e) => {
 
     chatData.addMessage(chatId, 'user', message);
 
-    appendMessage('user', message);
+    displayMessage('user', message);
     chatInput.value = '';
+
+    const includeMemory = document.getElementById('memory-toggle').checked;
 
     // Send message
     await sendChatMessage(sessionId, chatId, message, {
@@ -59,8 +61,7 @@ chatForm.addEventListener('submit', async (e) => {
         onSuccess: (reply) => {
             removeTypingIndicator();
 
-            // chatData.addMessage(chatId, 'assistant', reply);
-            appendMessage('bot', reply);
+            displayMessage('assistant', reply);
 
             // Update chat preview
             const previewText = chatData.getPreview(chatId);
@@ -71,8 +72,9 @@ chatForm.addEventListener('submit', async (e) => {
         onError: (err) => {
             console.error(err);
             removeTypingIndicator();
-            appendMessage('bot', 'Oops! Something went wrong.');
-        }
+            displayMessage('assistant-error', 'Oops! Something went wrong.');
+        },
+        memoryEnabled: includeMemory,
     });
 });
 

@@ -8,10 +8,17 @@ const openaiClient = new OpenAI({
 
 const chatRepository = new ChatRepository();
 
-export async function getReplyFromLLM(sessionId, chatId, message) {
+/** Retrieves a reply from the LLM based on the chat history and user message.
+ *
+ * @param {string} sessionId - The user's session identifier.
+ * @param {string} chatId - The chat identifier.
+ * @param {string} message
+ * @param {boolean} memoryEnabled - Whether to enable short-term memory for the chat.
+ */
+export async function getReplyFromLLM(sessionId, chatId, message, memoryEnabled) {
     
     // Retrieve previous messages
-    const history = await chatRepository.getOrCreateChatHistory(sessionId, chatId);
+    const history = memoryEnabled ? await chatRepository.getOrCreateChatHistory(sessionId, chatId) : [];
 
     // Add new user message to history
     const userMessageData = {
@@ -30,13 +37,16 @@ export async function getReplyFromLLM(sessionId, chatId, message) {
     const aiReplyMessage = completion.output_text;
 
     // Save messages for short-term memory
-    const chatMessageData = {
-        role: 'assistant',
-        content: aiReplyMessage,
-    }
+    if (memoryEnabled) {
 
-    await chatRepository.saveChatMessage(sessionId, chatId, userMessageData);
-    await chatRepository.saveChatMessage(sessionId, chatId, chatMessageData);
+        const chatMessageData = {
+            role: 'assistant',
+            content: aiReplyMessage,
+        };
+
+        await chatRepository.saveChatMessage(sessionId, chatId, userMessageData);
+        await chatRepository.saveChatMessage(sessionId, chatId, chatMessageData);
+    }
 
     return aiReplyMessage;
 }

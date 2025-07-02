@@ -3,7 +3,7 @@ import CONFIG from '../../config.js';
 
 const client = await createClient({
     url: CONFIG.redisUrl,
-}).on('error', (err) => console.log("Redis Client Error", err))
+}).on('error', (err) => console.log('Redis Client Error', err))
   .connect();
 
 /**
@@ -53,7 +53,7 @@ export default class ChatRepository {
      * @param {string} sessionId
      */
     async deleteChats(sessionId) {
-        return  client.json.del(sessionId);
+        return client.json.del(sessionId);
     }
 
 }

@@ -47,9 +47,10 @@ export const chatData = {
  * @param {() => void} [options.onLoad]                 - called before fetch
  * @param {(reply: string) => void} [options.onSuccess] - called with assistant reply
  * @param {(error: any) => void} [options.onError]      - called on fetch or server error
+ * @param {boolean} [options.memoryEnabled]      - called on fetch or server error
  */
 export async function sendChatMessage(sessionId, chatId, message, options = {}) {
-    const { onLoad, onSuccess, onError } = options;
+    const { onLoad, onSuccess, onError, memoryEnabled } = options;
 
     try {
         onLoad?.();
@@ -60,6 +61,9 @@ export async function sendChatMessage(sessionId, chatId, message, options = {}) 
                 chatId,
                 sessionId,
                 message,
+                ...(memoryEnabled && {
+                    memoryEnabled: true
+                })
             })
         });
 

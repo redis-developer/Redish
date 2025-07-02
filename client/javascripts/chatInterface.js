@@ -15,10 +15,10 @@ export function displayActiveChat(chatId) {
 
 export function renderMessages(messages) {
     chatWindow.innerHTML = '';
-    messages.forEach(msg => appendMessage(msg.role, msg.content));
+    messages.forEach(msg => displayMessage(msg.role, msg.content));
 }
 
-export function appendMessage(role, content) {
+export function displayMessage(role, content) {
     const msg = document.createElement('div');
     msg.className = `message ${role}`;
     msg.innerText = content;
@@ -38,7 +38,7 @@ export function addChatToSidebar(chatId, preview = 'New Chat') {
 export function showTypingIndicator() {
     const typingEl = document.createElement('div');
     typingEl.id = 'typing-indicator';
-    typingEl.className = 'message bot';
+    typingEl.className = 'message assistant-typing';
     typingEl.innerText = 'Assistant is typing...';
     chatWindow.appendChild(typingEl);
     chatWindow.scrollTop = chatWindow.scrollHeight;

@@ -6,14 +6,14 @@ const router = Router();
 /* GET home page. */
 // POST /chat
 router.post('/chat', async function(req, res, next) {
-	const { message, sessionId, chatId } = req.body;
+	const { message, sessionId, chatId, memoryEnabled } = req.body;
 
 	if (!message || !sessionId) {
 		return res.status(400).json({ error: 'Missing message or sessionId' });
 	}
 
 	try {
-		const reply = await getReplyFromLLM(sessionId, chatId, message);
+		const reply = await getReplyFromLLM(sessionId, chatId, message, memoryEnabled);
 		res.json({ reply });
 	} catch (error) {
 		console.log(error);
@@ -32,10 +32,8 @@ router.post('/chat/end-session', async function(req, res, next) {
 		const result = await endSession(sessionId);
 		res.json(result);
 	} catch (error) {
-
 		console.log(error.stack);
 		res.status(500).json({ error: 'Something went wrong.' });
-		next(error);
 	}
 });
 
