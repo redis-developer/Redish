@@ -4,6 +4,12 @@
 
 RediBuddy is a lightweight, memory-backed AI assistant built using **Redis** and **OpenAI**. It mimics ChatGPT’s multi-chat interface with short-term memory using Redis as the memory store, letting users have quick, ephemeral conversations.
 
+## App screenshots
+
+![App home page](./screenshots/home-screen.png)
+
+![Chat UI](./screenshots/main-chat.png)
+
 ---
 
 ## 🧠 What it does
@@ -25,59 +31,92 @@ RediBuddy is a lightweight, memory-backed AI assistant built using **Redis** and
 
 ## 🚀 Getting Started
 
-### 0. Prerequisites
+- **OpenAI API Key**
 
-#### ✅ Node.js (v18 or higher)
+  Create an account and [create an API key](https://platform.openai.com/account/api-keys).
 
-[Download & Install Node.js](https://nodejs.org/)
+- Clone this repository:
 
-#### ✅ Redis
+  ```bash
+  git clone https://github.com/booleanhunter/redibuddy.git
+  cd redibuddy
+  ```
 
-Install and run Redis. You can follow:
+- Configure environment variables
 
-- [Redis installation guide](https://redis.io/docs/getting-started/installation/)
+  Create a `.env` file at the root:
 
-- Or use Docker:
+  ```bash
+  OPENAI_API_KEY=your_openai_api_key
+  REDIS_URL=your_redis_connection_string
+  SERVER_PORT=3000
+  ```
 
-```bash
-  docker pull redis:8.0
-  docker run --name redibuddy -p 6379:6379 redis:8.0
-```
+  📝 Make sure to replace these placeholders with your real values before running the app.
 
-#### ✅ OpenAI API Key
+### Option 1: Manual installation
 
-Create an account and generate your API key from: https://platform.openai.com/account/api-keys
+#### ✅ Prerequisites
+
+- **Node.js (v18 or higher)**
+  [Download & Install Node.js](https://nodejs.org/)
+
+- **Redis**
+  
+  You can either:
+
+  - Install Redis locally: [Redis installation guide](https://redis.io/docs/getting-started/installation/)
+
+  - Or, use docker:
+
+  ```bash
+    docker pull redis:8.0
+    docker run --name redibuddy-redis -p 6379:6379 redis:8.0
+  ```
+
+  - Or use [Redis cloud](https://redis.io) (no installation required)
 
 ---
 
-### 1. Clone the repo
+#### ✅ Setup
+
+- Install dependencies
+
+  `cd` into the project root and run:
+
+  ```bash
+  npm install
+  ```
+
+- Configure environment variables
+
+  Replace the values in your `.env` file with your actual API key, Redis connection string, and desired server port.
+
+- Start the server
+
+  ```bash
+  npm start
+  ```
+
+### Option 2:  🐳 Run with Docker Compose
+
+You can skip manual setup and run everything using Docker (Requires [Docker](https://www.docker.com/) to be setup)
 
 ```bash
-git clone https://github.com/booleanhunter/redibuddy.git
-cd redibuddy
+docker compose up
 ```
 
-### 2. Install dependencies
+To stop the containers later:
 
 ```bash
-npm install
+docker compose down -v
 ```
 
-### 3. Configure environment variables
+### Access the app
 
-Create a `.env` file at the root:
+Visit http://localhost:3000 in your browser (or use the port specified in `.env`).
 
-```bash
-OPENAI_API_KEY=your_openai_api_key
-REDIS_URL=redis://localhost:6379
-SERVER_PORT=3000
-```
-
-### 4. Start the server
-
-```bash
-npm start
-```
+---
 
 ## 🧪 Features
 

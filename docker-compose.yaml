@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  redibuddy-db:
+    image: redis:8.0
+    container_name: redibuddy-redis
+    restart: always
+    volumes:
+      - redibuddy-data:/redibuddy/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - redibuddy-network
+    ports:
+      - "6379:6379"
+
+  redibuddy-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: redibuddy-app:latest
+    container_name: redibuddy-app
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      redibuddy-db:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    environment:
+      REDIS_URL: "redis://redibuddy-db:6379"
+    networks:
+      - redibuddy-network
+
+volumes:
+  redibuddy-data:
+
+networks:
+  redibuddy-network:
