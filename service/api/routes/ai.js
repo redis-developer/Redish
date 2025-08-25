@@ -14,7 +14,10 @@ router.post('/chat', async function(req, res, next) {
 
 	try {
 		const reply = await getReplyFromLLM(sessionId, chatId, message, memoryEnabled);
-		res.json({ reply });
+		res.json({ 
+			content: reply.content,
+			isCachedResponse: reply.isCachedResponse
+		});
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ error: 'Something went wrong.' });

@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>RediBuddy</title>
+    <title>{{app_name}}</title>
     <link rel="stylesheet" href="./stylesheets/chat.css" media="screen,print" >
     <link rel="icon" href="images/redis-avatar.png" type="image/png">
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="RediBuddy">
+    <meta name="title" content="{{app_name}}">
     <meta name="description" content="Temporary memory, consistent help.">
     <meta name="keywords" content="Redis, OpenAI, Chatbot">
 
-    <meta property="title" content="RediBuddy">
+    <meta property="title" content="{{app_name}}">
     <meta property="description" content="Temporary memory, consistent help.">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/booleanhunter/redibuddy">
-    <meta property="og:title" content="RediBuddy">
+    <meta property="og:title" content="{{app_name}}">
     <meta property="og:description" content="Temporary memory, consistent help.">
     <meta property="og:image" content="https://github.com/booleanhunter/redibuddy/raw/main/images/redis-avatar.png">
 </head>
@@ -54,11 +54,14 @@
                 <form id="chat-form" class="chat-input-area">
                     <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off" required aria-label="Type your message" />
                     <button type="submit">Send</button>
-                    <label class="switch">
-  <input type="checkbox" id="memory-toggle" checked>
-  <span class="slider"></span>
-</label>
-<span class="switch-label">Memory Mode</span>
+
+                    {{#if useLangCache}}
+                        <label class="switch">
+                            <input type="checkbox" id="memory-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="switch-label">Use Smart Recall</span>
+                    {{/if}}
 
                 </form>
             </div>

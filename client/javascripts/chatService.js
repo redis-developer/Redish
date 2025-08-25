@@ -1,6 +1,14 @@
 export let CURRENT_CHAT_ID = null;
 export let CHATS = {}; // In-memory store of chatId → messages
 
+/**
+ * @typedef {Object} ChatMessage
+ * @property {'user' | 'assistant'} role - Who sent the message.
+ * @property {string} content - The actual message text.
+ * @property {boolean} [isCached] - Whether the message came from cache.
+ * @property {number|string} [responseTime] - Response time (optional).
+ */
+
 export const chatData = {
     get currentChatId() {
         return CURRENT_CHAT_ID;
@@ -14,15 +22,15 @@ export const chatData = {
     set chats(newChats) {
         CHATS = newChats;
     },
+
     /**
      * Adds a message to the chat by chatId.
-     * @param {string} chatId 
-     * @param {'user' | 'assistant'} role 
-     * @param {string} content 
+     * @param {string} chatId - The ID of the chat session.
+     * @param {ChatMessage} message - The message to add.
      */
-    addMessage(chatId, role, content) {
+    addMessage(chatId, message) {
         CHATS[chatId] = CHATS[chatId] || [];
-        CHATS[chatId].push({ role, content });
+        CHATS[chatId].push(message);
     },
 
     /**
@@ -54,6 +62,7 @@ export async function sendChatMessage(sessionId, chatId, message, options = {}) 
 
     try {
         onLoad?.();
+        const startTime = performance.now();
         const res = await fetch('/ai/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -72,11 +81,20 @@ export async function sendChatMessage(sessionId, chatId, message, options = {}) 
             throw new Error(error.error || 'Unknown error');
         }
 
+        const endTime = performance.now();
+        const responseTime = (endTime - startTime) / 1000; // in seconds
+
         const data = await res.json();
-        const reply = data.reply;
-        chatData.addMessage(chatId, 'assistant', reply);
+
+        const chatMessageObject = {
+            role: 'assistant',
+            content: data.content,
+            isCachedResponse: data.isCachedResponse,
+            responseTime
+        }
+        chatData.addMessage(chatId, chatMessageObject);
         
-        onSuccess?.(reply);
+        onSuccess?.(chatMessageObject);
 
     } catch (error) {
         onError?.(error);

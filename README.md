@@ -15,7 +15,9 @@ RediBuddy is a lightweight, memory-backed AI assistant built using **Redis** and
 ## 🧠 What it does
 
 - Interactive chatbot interface
-- Leverages Redis to provide super-fast conversational context to LLM.
+- Leverages **Redis** to provide:
+  - Super-fast conversation memory (session-based)
+  - Smart response reuse using **LangCache** for **semantic caching**
 - Conversations are tied to a unique session name and cleared at the end of the session.
 
 ---
@@ -24,7 +26,8 @@ RediBuddy is a lightweight, memory-backed AI assistant built using **Redis** and
 
 - **Node.js** + **Express** (Backend API)
 - **Redis** (Conversation store)
-- **OpenAI API** (GPT-4o-mini)
+- **OpenAI API**
+- **LangCache** (Semantic caching engine powered by Redis + embeddings)
 - **HTML + CSS + Vanilla JS** (Frontend)
 
 ---
@@ -49,7 +52,11 @@ RediBuddy is a lightweight, memory-backed AI assistant built using **Redis** and
   ```bash
   OPENAI_API_KEY=your_openai_api_key
   REDIS_URL=your_redis_connection_string
+  LANGCACHE_API_KEY="your_langcache_api_key"
+  LANGCACHE_API_BASE_URL="your_langcache_api_base_url"
+  LANGCACHE_CACHE_ID="your_langgache_cache_id"
   SERVER_PORT=3000
+  MODEL_NAME="gpt-4o-mini"
   ```
 
   📝 Make sure to replace these placeholders with your real values before running the app.
@@ -122,7 +129,8 @@ Visit http://localhost:3000 in your browser (or use the port specified in `.env`
 
 - 🔁 Multiple chats per user (like tabs)
 - 🧠 Short-term memory support using Redis
-- 🤖 Powered by GPT-4o-mini
+- ⚡ Smart recall using LangCache (Redis-powered semantic cache), for enabling fast responses for repeated or similar queries
+- 🤖 Powered by Open AI
 - 🧩 Clean modular JS architecture
 
 ## 🐞 Reporting Issues

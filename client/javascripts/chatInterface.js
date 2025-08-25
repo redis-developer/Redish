@@ -18,12 +18,23 @@ export function renderMessages(messages) {
     messages.forEach(msg => displayMessage(msg.role, msg.content));
 }
 
-export function displayMessage(role, content) {
+export function displayMessage(role, content, isCached = false, responseTime = null) {
     const msg = document.createElement('div');
     msg.className = `message ${role}`;
     msg.innerText = content;
     chatWindow.appendChild(msg);
     chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    if (role === 'assistant') {
+        const cacheNote = document.createElement("div");
+        cacheNote.className = "cache-note";
+        cacheNote.innerHTML = `
+        <span>⏱️ ${responseTime.toFixed(3)}s</span>
+        ${isCached ? `<span>⚡ Using a previous answer to save time. Turn off Smart Recall if you'd prefer a fresh take!</span>` : ""}
+        `;
+
+        msg.appendChild(cacheNote);
+    }
 }
 
 export function addChatToSidebar(chatId, preview = 'New Chat') {

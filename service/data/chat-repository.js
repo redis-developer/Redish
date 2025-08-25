@@ -1,10 +1,22 @@
 import { createClient } from 'redis';
+import { LangCache } from "@redis-ai/langcache";
+
 import CONFIG from '../../config.js';
 
 const client = await createClient({
     url: CONFIG.redisUrl,
 }).on('error', (err) => console.log('Redis Client Error', err))
   .connect();
+
+let langCache = null;
+
+if (CONFIG.useLangCache) {
+    langCache = new LangCache({
+        serverURL: CONFIG.langcacheApiBaseUrl,
+        cacheId: CONFIG.langcacheCacheId,
+        apiKey: CONFIG.langcacheApiKey,
+    });
+}
 
 /**
  * @typedef {Object} ChatMessage
@@ -56,4 +68,44 @@ export default class ChatRepository {
         return client.json.del(sessionId);
     }
 
+    /**
+     * Search user query in langcache
+     * @param {string} sessionId
+     * @param {string} query
+     * @returns {Promise<string|null>}
+     */
+
+    async searchUserQueryInCache(sessionId, query) {
+        const result = await langCache.search({
+            prompt: query,
+            similarityThreshold: 0.9,
+            attributes: {
+                "sessionId": sessionId,
+            }
+        });
+
+        return result.data?.[0]?.response || null;
+    }
+
+    async saveLLMResponseInCache(sessionId, query, aiReplyMessage) {
+        const result = await langCache.set({
+            prompt: query,
+            response: aiReplyMessage,
+            attributes: {
+                "sessionId": sessionId
+            }
+        });
+    
+        return result;
+    }
+
+    async clearUserCache(sessionId) {
+        const result = await langCache.deleteQuery({
+            attributes: {
+                "sessionId": sessionId
+            }
+        });
+    
+        return result.deletedEntriesCount;
+    }
 }

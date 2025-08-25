@@ -46,22 +46,27 @@ chatForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    chatData.addMessage(chatId, 'user', message);
+    chatData.addMessage(chatId, { role: 'user', content: message });
 
     displayMessage('user', message);
     chatInput.value = '';
 
-    const includeMemory = document.getElementById('memory-toggle').checked;
+    const includeMemory = document.getElementById('memory-toggle')?.checked || false;
 
     // Send message
     await sendChatMessage(sessionId, chatId, message, {
         onLoad: () => {
             showTypingIndicator();
         },
-        onSuccess: (reply) => {
+        onSuccess: (chatReplyObject) => {
             removeTypingIndicator();
 
-            displayMessage('assistant', reply);
+            displayMessage(
+                'assistant',
+                chatReplyObject.content,
+                chatReplyObject.isCachedResponse,
+                chatReplyObject.responseTime,
+            );
 
             // Update chat preview
             const previewText = chatData.getPreview(chatId);

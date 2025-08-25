@@ -18,7 +18,7 @@ const chatRepository = new ChatRepository();
 export async function getReplyFromLLM(sessionId, chatId, message, memoryEnabled) {
     
     // Retrieve previous messages
-    const history = memoryEnabled ? await chatRepository.getOrCreateChatHistory(sessionId, chatId) : [];
+    const history = await chatRepository.getOrCreateChatHistory(sessionId, chatId);
 
     // Add new user message to history
     const userMessageData = {
@@ -28,33 +28,67 @@ export async function getReplyFromLLM(sessionId, chatId, message, memoryEnabled)
 
     history.push(userMessageData);
 
-    // Call OpenAI Chat API
-    const completion = await openaiClient.responses.create({
-        model: "gpt-4o-mini",
-        input: history,
-    });
+    let queryResult = {};
+    let queryResponseString = "";
 
-    const aiReplyMessage = completion.output_text;
+    if (memoryEnabled && CONFIG.useLangCache) {
+        const cachedResult = await chatRepository.searchUserQueryInCache(sessionId, message);
 
-    // Save messages for short-term memory
-    if (memoryEnabled) {
+        if (!cachedResult) {
+            const completion = await openaiClient.responses.create({
+                model: CONFIG.modelName,
+                input: history,
+            });
 
-        const chatMessageData = {
-            role: 'assistant',
-            content: aiReplyMessage,
+            queryResponseString = completion.output_text;
+
+            queryResult = {
+                isCachedResponse: false,
+                content: queryResponseString
+            };
+
+            chatRepository.saveLLMResponseInCache(sessionId, message, queryResponseString);
+        } else {
+            queryResponseString = cachedResult;
+            queryResult = {
+                isCachedResponse: true,
+                content: queryResponseString,
+            };
+        }
+    } else {
+        const completion = await openaiClient.responses.create({
+            model: CONFIG.modelName,
+            input: history,
+        });
+
+        queryResponseString = completion.output_text;
+
+        queryResult = {
+            isCachedResponse: false,
+            content: queryResponseString,
         };
 
-        await chatRepository.saveChatMessage(sessionId, chatId, userMessageData);
-        await chatRepository.saveChatMessage(sessionId, chatId, chatMessageData);
+        CONFIG.useLangCache && chatRepository.saveLLMResponseInCache(sessionId, message, queryResponseString);
     }
 
-    return aiReplyMessage;
+    const chatMessageData = {
+        role: 'assistant',
+        content: queryResponseString,
+    };
+
+    await chatRepository.saveChatMessage(sessionId, chatId, userMessageData);
+    await chatRepository.saveChatMessage(sessionId, chatId, chatMessageData);
+
+    return queryResult;
 }
 
 export async function endSession(sessionId) {
     const deletedSessionsCount = await chatRepository.deleteChats(sessionId);
+    const clearedCacheCount = CONFIG.useLangCache ? await chatRepository.clearUserCache(sessionId) : 0;
+
     return {
         message: `Session ended successfully.`,
         deletedSessionsCount,
+        clearedCacheCount,
     };
 }
