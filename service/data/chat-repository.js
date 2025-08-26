@@ -8,6 +8,7 @@ const client = await createClient({
 }).on('error', (err) => console.log('Redis Client Error', err))
   .connect();
 
+/** @type {LangCache|null} */
 let langCache = null;
 
 if (CONFIG.useLangCache) {
@@ -74,8 +75,7 @@ export default class ChatRepository {
      * @param {string} query
      * @returns {Promise<string|null>}
      */
-
-    async searchUserQueryInCache(sessionId, query) {
+    async findFromSemanticCache(sessionId, query) {
         const result = await langCache.search({
             prompt: query,
             similarityThreshold: 0.9,
@@ -87,19 +87,34 @@ export default class ChatRepository {
         return result.data?.[0]?.response || null;
     }
 
-    async saveLLMResponseInCache(sessionId, query, aiReplyMessage) {
+    /**
+     * Save results in Redis Langcache.
+     * @async
+     * @param {string} sessionId - Unique identifier for the user session.
+     * @param {string} query - The original user query to store as the semantic prompt.
+     * @param {string} aiReplyMessage - The AI-generated response to be cached.
+     * @param {number} ttlMillis - Time-to-live in milliseconds for the cached entry.
+     */
+    async saveResponseInSemanticCache(sessionId, query, aiReplyMessage, ttlMillis) {
         const result = await langCache.set({
             prompt: query,
             response: aiReplyMessage,
             attributes: {
                 "sessionId": sessionId
-            }
+            },
+            ttlMillis,
         });
     
         return result;
     }
 
-    async clearUserCache(sessionId) {
+    /**
+     * Clear all semantic cache entries associated with a session.
+     * 
+     * @async
+     * @param {string} sessionId - The session identifier used to scope cache entries.
+     */
+    async clearSemanticCache(sessionId) {
         const result = await langCache.deleteQuery({
             attributes: {
                 "sessionId": sessionId

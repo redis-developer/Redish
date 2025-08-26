@@ -1,19 +1,19 @@
 import { Router } from 'express';
-import { getReplyFromLLM, endSession } from '../../domain/chat.js';
+import { getReplyFromLLM, getReplyFromAgent, endSession } from '../../domain/chat.js';
 
 const router = Router();
 
 /* GET home page. */
 // POST /chat
 router.post('/chat', async function(req, res, next) {
-	const { message, sessionId, chatId, memoryEnabled } = req.body;
+	const { message, sessionId, chatId, useSmartRecall } = req.body;
 
 	if (!message || !sessionId) {
 		return res.status(400).json({ error: 'Missing message or sessionId' });
 	}
 
 	try {
-		const reply = await getReplyFromLLM(sessionId, chatId, message, memoryEnabled);
+		const reply = await getReplyFromAgent(sessionId, chatId, message, useSmartRecall);
 		res.json({ 
 			content: reply.content,
 			isCachedResponse: reply.isCachedResponse

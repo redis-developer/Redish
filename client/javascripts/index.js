@@ -79,7 +79,7 @@ chatForm.addEventListener('submit', async (e) => {
             removeTypingIndicator();
             displayMessage('assistant-error', 'Oops! Something went wrong.');
         },
-        memoryEnabled: includeMemory,
+        useSmartRecall: includeMemory,
     });
 });
 
