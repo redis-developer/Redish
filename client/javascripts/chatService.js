@@ -135,3 +135,76 @@ export async function endSession(sessionId, options = {}) {
         onError?.(err);
     }
 }
+
+/**
+ * Adds a product to the cart.
+ *
+ * @param {string} sessionId - The user's session identifier.
+ * @param {string} productId - The product ID to add.
+ * @param {number} quantity - The quantity to add (default 1).
+ * @param {Object} [options]
+ * @param {() => void} [options.onLoad] - Called before the request starts.
+ * @param {(result: any) => void} [options.onSuccess] - Called on successful addition.
+ * @param {(error: any) => void} [options.onError] - Called on failure.
+ */
+export async function addToCart(sessionId, productId, quantity = 1, options = {}) {
+    const { onLoad, onSuccess, onError } = options;
+
+    try {
+        onLoad?.();
+
+        const res = await fetch('/api/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                sessionId,
+                productId,
+                quantity
+            }),
+        });
+
+        const result = await res.json();
+
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to add to cart');
+        }
+
+        onSuccess?.(result);
+
+    } catch (err) {
+        console.error('Failed to add to cart:', err);
+        onError?.(err);
+    }
+}
+
+/**
+ * Loads the cart count for a session.
+ *
+ * @param {string} sessionId - The user's session identifier.
+ * @param {Object} [options]
+ * @param {() => void} [options.onLoad] - Called before the request starts.
+ * @param {(cart: any) => void} [options.onSuccess] - Called with cart data.
+ * @param {(error: any) => void} [options.onError] - Called on failure.
+ */
+export async function loadCartCount(sessionId, options = {}) {
+    const { onLoad, onSuccess, onError } = options;
+
+    try {
+        onLoad?.();
+
+        const res = await fetch(`/api/cart/${sessionId}`);
+        
+        if (!res.ok) {
+            // If cart doesn't exist yet, that's fine - just return 0
+            onSuccess?.({ success: true, summary: { totalItems: 0 } });
+            return;
+        }
+        
+        const cart = await res.json();
+        onSuccess?.(cart);
+
+    } catch (err) {
+        console.error('Failed to load cart count:', err);
+        onError?.(err);
+    }
+}

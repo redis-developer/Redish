@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{product.name}} - {{app_name}}</title>
+    <link rel="stylesheet" href="../stylesheets/chat.css" media="screen,print" >
+    <link rel="stylesheet" href="../stylesheets/product.css" media="screen,print" >
+    <link rel="icon" href="../images/redis-avatar.png" type="image/png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <meta name="description" content="{{product.description}}">
+    <meta property="og:title" content="{{product.name}} - {{app_name}}">
+    <meta property="og:description" content="{{product.description}}">
+</head>
+<body class="neo-brutalist-theme">
+    <!-- Header -->
+    <header class="brutal-header">
+        <div class="brutal-header-container">
+            <div class="brutal-logo-section">
+                <h1 class="brutal-site-logo">
+                    <i class="fas fa-shopping-basket"></i>
+                    <a href="/app">{{app_name}}</a>
+                </h1>
+            </div>
+            
+            <div class="brutal-header-actions">
+                <button onclick="history.back()" class="brutal-back-btn">
+                    <i class="fas fa-arrow-left"></i> BACK
+                </button>
+                <div class="brutal-cart-info">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="brutal-cart-count">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Details -->
+    <div class="brutal-product-container">
+        <div class="brutal-product-detail">
+            <div class="brutal-product-image-section">
+                <div class="brutal-product-main-image">
+                    <!-- Fallback emoji based on category -->
+                    <span class="brutal-product-emoji">
+                        {{#if (eq product.category "Fruits & Vegetables")}}🥬{{/if}}
+                        {{#if (eq product.category "Bakery & Dairy")}}🥛{{/if}}
+                        {{#if (eq product.category "Meat & Seafood")}}🐟{{/if}}
+                        {{#if (eq product.category "Grains & Pulses")}}🌾{{/if}}
+                        {{#if (eq product.category "Snacks & Beverages")}}🍪{{/if}}
+                        {{#unless product.category}}🛒{{/unless}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="brutal-product-info-section">
+                <div class="brutal-product-header">
+                    <h1 class="brutal-product-title">{{product.name}}</h1>
+                    {{#if product.brand}}
+                        <p class="brutal-product-brand">BY {{product.brand}}</p>
+                    {{/if}}
+                    
+                    <div class="brutal-product-badges">
+                        <span class="brutal-category-badge">{{product.category}}</span>
+                        {{#if product.subCategory}}
+                            <span class="brutal-subcategory-badge">{{product.subCategory}}</span>
+                        {{/if}}
+                        {{#if product.type}}
+                            <span class="brutal-type-badge">{{product.type}}</span>
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="brutal-product-rating">
+                    {{#if product.rating}}
+                        <div class="brutal-rating-stars">
+                            {{#repeat product.rating}}⭐{{/repeat}}
+                            <span class="brutal-rating-text">{{product.rating}}/5</span>
+                        </div>
+                    {{/if}}
+                </div>
+
+                <div class="brutal-product-pricing">
+                    <div class="brutal-price-section">
+                        <span class="brutal-current-price">₹{{product.salePrice}}</span>
+                        
+                    </div>
+                    {{#if product.isOnSale}}
+                        <div class="brutal-sale-banner">🔥 ON SALE!</div>
+                    {{/if}}
+                </div>
+
+                {{#if product.description}}
+                    <div class="brutal-product-description">
+                        <h3>DESCRIPTION</h3>
+                        <p>{{product.description}}</p>
+                    </div>
+                {{/if}}
+
+                <div class="brutal-product-actions">
+                    <div class="brutal-quantity-section">
+                        <label for="quantity">QUANTITY:</label>
+                        <div class="brutal-quantity-controls">
+                            <button class="brutal-quantity-btn" onclick="changeQuantity(-1)">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="10">
+                            <button class="brutal-quantity-btn" onclick="changeQuantity(1)">+</button>
+                        </div>
+                    </div>
+                    
+                    <button class="brutal-add-to-cart-btn" onclick="addToCart('{{product.id}}')">
+                        <i class="fas fa-shopping-cart"></i>
+                        ADD TO CART
+                    </button>
+                </div>
+
+                <div class="brutal-product-meta">
+                    <div class="brutal-meta-item">
+                        <strong>PRODUCT ID:</strong> {{product.id}}
+                    </div>
+                    <div class="brutal-meta-item">
+                        <strong>CATEGORY:</strong> {{product.category}}
+                    </div>
+                    {{#if product.brand}}
+                        <div class="brutal-meta-item">
+                            <strong>BRAND:</strong> {{product.brand}}
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products Section -->
+        <div class="brutal-related-products">
+            <h3>YOU MIGHT ALSO LIKE</h3>
+            <div id="related-products-grid" class="brutal-products-grid">
+                <!-- Related products will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="notification-container"></div>
+
+    <script>
+        // Get session ID from URL or generate one
+        const urlParams = new URLSearchParams(window.location.search);
+        const userName = urlParams.get('name') || 'User';
+        const sessionId = `${userName.toLowerCase()}_${Date.now()}`;
+
+        function changeQuantity(delta) {
+            const quantityInput = document.getElementById('quantity');
+            const currentValue = parseInt(quantityInput.value) || 1;
+            const newValue = Math.max(1, Math.min(10, currentValue + delta));
+            quantityInput.value = newValue;
+        }
+
+        async function addToCart(productId) {
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const addBtn = document.querySelector('.brutal-add-to-cart-btn');
+            
+            // Disable button during request
+            addBtn.disabled = true;
+            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ADDING...';
+
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sessionId: sessionId,
+                        productId: productId,
+                        quantity: quantity
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(`✅ ${result.message}`, 'success');
+                    updateCartCount();
+                } else {
+                    showNotification(`❌ ${result.error}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                showNotification('❌ Failed to add to cart. Please try again.', 'error');
+            } finally {
+                // Re-enable button
+                addBtn.disabled = false;
+                addBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> ADD TO CART';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        async function updateCartCount() {
+            try {
+                const response = await fetch(`/api/cart/${sessionId}`);
+                const cart = await response.json();
+                
+                if (cart.success) {
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = cart.summary.totalItems;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating cart count:', error);
+            }
+        }
+
+        // Load related products
+        async function loadRelatedProducts() {
+            try {
+                const category = '{{product.category}}';
+                const currentProductId = '{{product.id}}';
+                
+                const response = await fetch('/api/cart/related', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        category: category,
+                        excludeId: currentProductId,
+                        limit: 4
+                    }),
+                });
+
+                // For now, we'll implement this later
+                console.log('Related products feature coming soon');
+                
+            } catch (error) {
+                console.error('Error loading related products:', error);
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            loadRelatedProducts();
+        });
+    </script>
+</body>
+</html>

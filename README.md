@@ -1,119 +1,102 @@
-# 🤖 RediBuddy
+# 🛒 Redish
 
-**Short-term memory. Long-term friendship.**
+**Redis-powered grocery ecommerce with intelligent shopping assistance.**
 
-RediBuddy is a lightweight, memory-backed AI assistant built using **Redis** and **OpenAI**. It mimics ChatGPT’s multi-chat interface with short-term memory using Redis as the memory store, letting users have quick, ephemeral conversations.
+Redish is an AI-powered grocery shopping platform that combines Redis's speed with LangGraph's intelligent workflow orchestration. Get personalized recipe recommendations, smart product suggestions, and lightning-fast responses through semantic caching.
 
 ## App screenshots
 
 ![App home page](./screenshots/home-screen.png)
 
-![Chat UI](./screenshots/main-chat.png)
-
 ---
 
 ## 🧠 What it does
 
-- Interactive chatbot interface
-- Leverages **Redis** to provide:
-  - Super-fast conversation memory (session-based)
-  - Smart response reuse using **LangCache** for **semantic caching**
-- Conversations are tied to a unique session name and cleared at the end of the session.
+- **Intelligent Grocery Shopping**: AI-powered assistant helps you find ingredients, discover recipes, and manage your cart
+- **LangGraph Workflow**: Advanced agentic workflows with specialized tools for different shopping scenarios
+- **Semantic Caching**: Lightning-fast responses using Redis-powered LangCache for similar queries
+- **Product Search**: Both text and vector-based search across grocery products with embeddings
+- **Recipe Intelligence**: Get ingredient lists with suggested products for any recipe
+- **Cart Management**: Add, view, and manage shopping cart items with real-time updates
 
 ---
 
 ## ⚙️ Tech Stack
 
 - **Node.js** + **Express** (Backend API)
-- **Redis** (Conversation store)
-- **OpenAI API**
-- **LangCache** (Semantic caching engine powered by Redis + embeddings)
+- **Redis** (Product store, conversational history, and semantic caching with LangCache)
+- **LangGraph** (AI workflow orchestration)
+- **OpenAI API** (GPT-4 for intelligent responses)
 - **HTML + CSS + Vanilla JS** (Frontend)
 
 ---
 
 ## 🚀 Getting Started
 
-- **OpenAI API Key**
+### Prerequisites
 
-  Create an account and [create an API key](https://platform.openai.com/account/api-keys).
+- **OpenAI API Key**: [Create an API key](https://platform.openai.com/account/api-keys)
+- **LangCache API**: [Get LangCache credentials](https://redis.io/langcache/)
 
-- Clone this repository:
+### Clone this repository
 
-  ```bash
-  git clone https://github.com/booleanhunter/redibuddy.git
-  cd redibuddy
-  ```
+```bash
+git clone https://github.com/redis-developer/Redish.git
+cd Redish
+```
 
-- Configure environment variables
+### Configure environment variables
 
-  Create a `.env` file at the root:
+Create a `.env` file at the root:
 
-  ```bash
-  OPENAI_API_KEY=your_openai_api_key
-  REDIS_URL=your_redis_connection_string
-  LANGCACHE_API_KEY="your_langcache_api_key"
-  LANGCACHE_API_BASE_URL="your_langcache_api_base_url"
-  LANGCACHE_CACHE_ID="your_langgache_cache_id"
-  SERVER_PORT=3000
-  MODEL_NAME="gpt-4o-mini"
-  ```
+```bash
+OPENAI_API_KEY=your_openai_api_key
+REDIS_URL=your_redis_connection_string
+LANGCACHE_API_KEY="your_langcache_api_key"
+LANGCACHE_API_BASE_URL="your_langcache_api_base_url"
+LANGCACHE_CACHE_ID="your_langcache_cache_id"
+SERVER_PORT=3000
+MODEL_NAME="gpt-4o-mini"
+```
 
-  📝 Make sure to replace these placeholders with your real values before running the app.
+📝 Make sure to replace these placeholders with your real values before running the app.
 
 ### Option 1: Manual installation
 
 #### ✅ Prerequisites
 
-- **Node.js (v18 or higher)**
-  [Download & Install Node.js](https://nodejs.org/)
-
-- **Redis**
-  
-  You can either:
-
+- **Node.js (v18 or higher)**: [Download & Install Node.js](https://nodejs.org/)
+- **Redis**: You can either:
   - Install Redis locally: [Redis installation guide](https://redis.io/docs/getting-started/installation/)
-
-  - Or, use docker:
-
-  ```bash
-    docker pull redis:8.0
-    docker run --name redibuddy-redis -p 6379:6379 redis:8.0
-  ```
-
-  - Or use [Redis cloud](https://redis.io) (no installation required)
-
----
+  - Use Docker: `docker run --name redish-redis -p 6379:6379 redis:8.0`
+  - Use [Redis Cloud](https://redis.io) (no installation required)
 
 #### ✅ Setup
 
-- Install dependencies
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-  `cd` into the project root and run:
+2. Load sample grocery data:
+   ```bash
+   npm run load-data
+   ```
 
-  ```bash
-  npm install
-  ```
+3. Start the server:
+   ```bash
+   npm start
+   ```
 
-- Configure environment variables
+### Option 2: 🐳 Run with Docker Compose
 
-  Replace the values in your `.env` file with your actual API key, Redis connection string, and desired server port.
-
-- Start the server
-
-  ```bash
-  npm start
-  ```
-
-### Option 2:  🐳 Run with Docker Compose
-
-You can skip manual setup and run everything using Docker (Requires [Docker](https://www.docker.com/) to be setup)
+Skip manual setup and run everything using Docker:
 
 ```bash
 docker compose up
 ```
 
-To stop the containers later:
+To stop the containers:
 
 ```bash
 docker compose down -v
@@ -127,12 +110,66 @@ Visit http://localhost:3000 in your browser (or use the port specified in `.env`
 
 ## 🧪 Features
 
-- 🔁 Multiple chats per user (like tabs)
-- 🧠 Short-term memory support using Redis
-- ⚡ Smart recall using LangCache (Redis-powered semantic cache), for enabling fast responses for repeated or similar queries
-- 🤖 Powered by Open AI
-- 🧩 Clean modular JS architecture
+### 🤖 AI-Powered Shopping Assistant
+- **Recipe Ingredients**: Ask for ingredients for any recipe and get suggested products
+- **Product Search**: Find products by name, category, or description
+- **Smart Recommendations**: AI suggests alternatives and complementary items
+- **Cart Management**: Add, remove, and view cart items through natural conversation
+
+### ⚡ Performance & Caching
+- **Semantic Cache**: Similar queries return instantly using LangCache
+- **Vector Search**: Find products using AI-powered similarity search
+- **Redis Storage**: Lightning-fast data retrieval and session management
+- **Optimized Responses**: Different cache TTL for recipes vs prices
+
+### 🛠️ Technical Features
+- **LangGraph Workflows**: Sophisticated AI agent routing and tool selection
+- **Modular Architecture**: Clean separation of services and data layers
+- **Multi-tool Agent**: Recipe tools, search tools, cart tools, and knowledge tools
+- **Session Management**: Multi-user support with isolated shopping sessions
+
+---
+
+## 🏗️ Architecture
+
+![Architecture Diagram](./technical-diagrams/grocery-agent-architecture-2-1.png)
+
+The system uses a LangGraph-powered AI agent that routes requests through specialized tools:
+
+1. **Cache Check**: First checks Redis semantic cache for similar queries
+2. **AI Agent**: Routes to appropriate tools based on request type
+3. **Specialized Tools**: Recipe ingredients, product search, cart operations, direct answers
+4. **Services Layer**: Product, cart, and chat services
+5. **Redis Storage**: Vector embeddings, semantic cache, and session data
+
+---
+
+## 🚀 API Endpoints
+
+- `POST /api/chat` - Main chat interface for AI shopping assistant
+- `GET /api/products/search` - Search products with text/vector similarity
+- `POST /api/cart/add` - Add items to shopping cart
+- `GET /api/cart` - View cart contents
+- `DELETE /api/cart` - Clear cart
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 🐞 Reporting Issues
 
-If you find a bug or have a feature request, open an issue.
+If you find a bug or have a feature request, [open an issue](https://github.com/redis-developer/Redish/issues).

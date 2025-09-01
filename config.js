@@ -5,12 +5,7 @@ if (!process.env.OPENAI_API_KEY) {
     console.warn('Warning: OPENAI_API_KEY is not defined in environment variables.');
 }
 
-let useLangCache = false;
-if (process.env.LANGCACHE_API_KEY && process.env.LANGCACHE_CACHE_ID && process.env.LANGCACHE_API_BASE_URL) {
-    useLangCache = true;
-} else {
-    console.warn('Warning: LANGCACHE_API_KEY, LANGCACHE_CACHE_ID, or LANGCACHE_API_BASE_URL is not defined in environment variables.');
-}
+// LangCache is always assumed to be available
 
 const CONFIG = {
     serverPort: process.env.SERVER_PORT || 3000,
@@ -22,7 +17,6 @@ const CONFIG = {
     langcacheCacheId: process.env.LANGCACHE_CACHE_ID,
     langcacheApiBaseUrl: process.env.LANGCACHE_API_BASE_URL,
     appName: process.env.APP_NAME,
-    useLangCache,
 };
 
 export default CONFIG;
