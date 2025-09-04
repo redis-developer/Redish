@@ -1,6 +1,6 @@
 # 🛒 Redish
 
-**Redis-powered grocery ecommerce with intelligent shopping assistance.**
+**Redis-powered grocery e-commerce with intelligent shopping assistance.**
 
 Redish is an AI-powered grocery shopping platform that combines Redis's speed with LangGraph's intelligent workflow orchestration. Get personalized recipe recommendations, smart product suggestions, and lightning-fast responses through semantic caching.
 
@@ -10,18 +10,16 @@ Redish is an AI-powered grocery shopping platform that combines Redis's speed wi
 
 ---
 
-## 🧠 What it does
+## Product Features
 
-- **Intelligent Grocery Shopping**: AI-powered assistant helps you find ingredients, discover recipes, and manage your cart
-- **LangGraph Workflow**: Advanced agentic workflows with specialized tools for different shopping scenarios
-- **Semantic Caching**: Lightning-fast responses using Redis-powered LangCache for similar queries
+- **Smart Grocery Shopping**: AI-powered assistant helps you find ingredients, discover recipes, and manage your cart
 - **Product Search**: Both text and vector-based search across grocery products with embeddings
 - **Recipe Intelligence**: Get ingredient lists with suggested products for any recipe
-- **Cart Management**: Add, view, and manage shopping cart items with real-time updates
+- **Cart Management**: Add, view, and manage shopping cart items
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 - **Node.js** + **Express** (Backend API)
 - **Redis** (Product store, conversational history, and semantic caching with LangCache)
@@ -31,7 +29,7 @@ Redish is an AI-powered grocery shopping platform that combines Redis's speed wi
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -50,13 +48,25 @@ cd Redish
 Create a `.env` file at the root:
 
 ```bash
+APP_NAME="Redish"
+SERVER_PORT=3000
+
 OPENAI_API_KEY=your_openai_api_key
+
 REDIS_URL=your_redis_connection_string
+
 LANGCACHE_API_KEY="your_langcache_api_key"
 LANGCACHE_API_BASE_URL="your_langcache_api_base_url"
 LANGCACHE_CACHE_ID="your_langcache_cache_id"
-SERVER_PORT=3000
+
 MODEL_NAME="gpt-4o-mini"
+
+# For tracing with Langsmith
+LANGSMITH_TRACING="true"
+LANGSMITH_ENDPOINT="your_langsmith_endpoint"
+LANGSMITH_API_KEY="your_langsmith_api_key"
+LANGSMITH_PROJECT="your_langsmith_project"
+
 ```
 
 📝 Make sure to replace these placeholders with your real values before running the app.
@@ -80,7 +90,7 @@ MODEL_NAME="gpt-4o-mini"
 
 2. Load sample grocery data:
    ```bash
-   npm run load-data
+   npm run load-products
    ```
 
 3. Start the server:
@@ -108,33 +118,27 @@ Visit http://localhost:3000 in your browser (or use the port specified in `.env`
 
 ---
 
-## 🧪 Features
+## AI Features
 
-### 🤖 AI-Powered Shopping Assistant
 - **Recipe Ingredients**: Ask for ingredients for any recipe and get suggested products
 - **Product Search**: Find products by name, category, or description
 - **Smart Recommendations**: AI suggests alternatives and complementary items
 - **Cart Management**: Add, remove, and view cart items through natural conversation
 
-### ⚡ Performance & Caching
+## Technical features
+
 - **Semantic Cache**: Similar queries return instantly using LangCache
 - **Vector Search**: Find products using AI-powered similarity search
-- **Redis Storage**: Lightning-fast data retrieval and session management
-- **Optimized Responses**: Different cache TTL for recipes vs prices
-
-### 🛠️ Technical Features
-- **LangGraph Workflows**: Sophisticated AI agent routing and tool selection
-- **Modular Architecture**: Clean separation of services and data layers
+- **Redis as memory layer**: for fast data retrieval
+- **LangGraph Workflows**:  AI agent routing, tool selection
 - **Multi-tool Agent**: Recipe tools, search tools, cart tools, and knowledge tools
-- **Session Management**: Multi-user support with isolated shopping sessions
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
-![Architecture Diagram](./technical-diagrams/grocery-agent-architecture-2-1.png)
 
-The system uses a LangGraph-powered AI agent that routes requests through specialized tools:
+The grocery agent uses a LangGraph-powered AI agent that routes requests through specialized tools:
 
 1. **Cache Check**: First checks Redis semantic cache for similar queries
 2. **AI Agent**: Routes to appropriate tools based on request type
@@ -144,7 +148,7 @@ The system uses a LangGraph-powered AI agent that routes requests through specia
 
 ---
 
-## 🚀 API Endpoints
+## API Endpoints
 
 - `POST /api/chat` - Main chat interface for AI shopping assistant
 - `GET /api/products/search` - Search products with text/vector similarity
