@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "load-data": "node scripts/load-data.js"
   },
   "dependencies": {
     "@langchain/core": "^0.3.72",
@@ -17,6 +18,7 @@
     "express": "~5.1.0",
     "express-handlebars": "^8.0.3",
     "hbs": "~4.2.0",
+    "langsmith": "^0.3.67",
     "morgan": "~1.10.0",
     "openai": "5.8.2",
     "redis": "^5.5.6"
