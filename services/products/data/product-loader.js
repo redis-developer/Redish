@@ -33,7 +33,11 @@ try {
         },
         '$.salePrice': {
             type: SCHEMA_FIELD_TYPE.NUMERIC,
-            AS: 'price'
+            AS: 'salePrice'
+        },
+        '$.marketPrice': {
+            type: SCHEMA_FIELD_TYPE.NUMERIC,
+            AS: 'marketPrice'
         },
         '$.rating': {
             type: SCHEMA_FIELD_TYPE.NUMERIC,

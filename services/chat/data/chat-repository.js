@@ -30,17 +30,24 @@ export default class ChatRepository {
      * @returns {Promise<ChatMessage[]>}
      */
     async getOrCreateChatHistory(sessionId, chatId) {
-        const chatHistory = await client.json.get(sessionId, {
-            path: `$.${chatId}`,
+        const userKey = `users:${sessionId}`;
+        const chatHistory = await client.json.get(userKey, {
+            path: `$.chat.${chatId}`,
         });
 
         if (!chatHistory) { // if user session itself does not exist
-            await client.json.set(sessionId, '$', {
-                [chatId]: [],
+            await client.json.set(userKey, '$', {
+                sessionId: sessionId,
+                chat: {
+                    [chatId]: [],
+                },
+                cart: {},
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             });
             return [];
         } else if (chatHistory.length === 0) { // if user session exists but chatId does not
-            await client.json.set(sessionId, `$.${chatId}`, []);
+            await client.json.set(userKey, `$.chat.${chatId}`, []);
             return [];
         } else {
             return chatHistory[0];
@@ -54,7 +61,9 @@ export default class ChatRepository {
      * @param {ChatMessage} chatMessage
      */
     async saveChatMessage(sessionId, chatId, chatMessage) {
-        return client.json.arrAppend(`${sessionId}`, `$.${chatId}`, chatMessage);
+        const userKey = `users:${sessionId}`;
+        await client.json.set(userKey, '$.updatedAt', new Date().toISOString());
+        return client.json.arrAppend(userKey, `$.chat.${chatId}`, chatMessage);
     }
 
     /**
@@ -62,7 +71,8 @@ export default class ChatRepository {
      * @param {string} sessionId
      */
     async deleteChats(sessionId) {
-        return client.json.del(sessionId);
+        const userKey = `users:${sessionId}`;
+        return client.json.del(userKey);
     }
 
     /**

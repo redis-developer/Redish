@@ -41,7 +41,7 @@ export default class ProductRepository {
                 PARAMS: {
                     vector: vectorBytes
                 },
-                RETURN: ['name', 'brand', 'category', 'salePrice', 'rating', 'score'],
+                RETURN: ['id', 'name', 'brand', 'category', 'price', 'salePrice', 'marketPrice', 'rating', 'score', 'isOnSale'],
                 DIALECT: 2,
                 LIMIT: { from: 0, size: limit }
             });
@@ -50,13 +50,14 @@ export default class ProductRepository {
             for (const doc of results.documents) {
                 const similarity = 1 - parseFloat(doc.value.score);
                 const productId = doc.id.replace('products:', '');
-                
                 products.push({
                     id: productId,
                     name: doc.value.name,
                     brand: doc.value.brand || 'Generic',
                     category: doc.value.category,
                     salePrice: parseFloat(doc.value.salePrice) || 0,
+                    marketPrice: parseFloat(doc.value.marketPrice) || 0,
+                    isOnSale: doc.value.isOnSale,
                     rating: parseFloat(doc.value.rating) || 0,
                     semanticScore: similarity
                 });
@@ -166,8 +167,6 @@ export default class ProductRepository {
             if (filters.length > 0) {
                 searchQuery = filters.length > 0 ? `(${searchQuery}) ${filters.join(' ')}` : searchQuery;
             }
-            
-            console.log(`🔍 Keyword search query: ${searchQuery}`);
             
             const results = await client.ft.search('idx:products', searchQuery, {
                 LIMIT: { from: 0, size: limit },

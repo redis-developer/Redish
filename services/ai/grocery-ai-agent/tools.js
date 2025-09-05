@@ -57,7 +57,7 @@ export const fastRecipeIngredientsTool = tool(
  */
 export const directAnswerTool = tool(
     async ({ question }) => {
-        console.log(`🧠 Direct answer for: "${question}"`);
+        console.log(`Direct LLM answer for: "${question}"`);
         
         try {
             const content = await getDirectAnswerFromLLM(question);
@@ -192,7 +192,7 @@ export const addToCartTool = tool(
  */
 export const viewCartTool = tool(
     async ({ sessionId }) => {
-        console.log(`👀 Viewing cart for session: ${sessionId}`);
+        console.log(`Viewing cart for session: ${sessionId}`);
         
         try {
             const cart = await getCart(sessionId);

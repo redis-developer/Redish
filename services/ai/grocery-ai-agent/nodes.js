@@ -157,7 +157,6 @@ export const groceryCacheCheck = async (state) => {
     
     console.log(`🔍 Checking semantic cache for: "${userQuery.substring(0, 50)}..."`);
     
-    
     try {
         const cachedResult = await chatRepository.findFromSemanticCache(state.sessionId, userQuery);
         
@@ -231,6 +230,6 @@ export const saveGroceryToCache = async (state) => {
         state.sessionId,
     );
     
-    console.log(`💾 Saved grocery result to cache with TTL: ${cacheTTL}ms`);
+    console.log(`💾 Saved user query to cache with TTL: ${cacheTTL}ms`);
     return {};
 };

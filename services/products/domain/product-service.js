@@ -91,9 +91,6 @@ export async function getRecipeIngredientsWithProducts(recipe, getIngredientsFro
         const essentialIngredients = ingredientsData.ingredients.filter(ing => ing.essential).slice(0, 6);
 
         console.log(`🚀 Searching for ${essentialIngredients.length} ingredients in parallel...`);
-        essentialIngredients.forEach(ing => {
-            console.log(`- ${ing.name} (Quantity: ${ing.quantity})`);
-        });
         
         // Parallel product searches for all ingredients
         const searchPromises = essentialIngredients.map(async (ingredient) => {
@@ -111,7 +108,8 @@ export async function getRecipeIngredientsWithProducts(recipe, getIngredientsFro
                             name: product.name,
                             brand: product.brand || 'Generic',
                             price: product.salePrice,
-                            category: product.category
+                            category: product.category,
+                            rating: product.rating,
                         }
                     };
                 } else {
@@ -135,7 +133,7 @@ export async function getRecipeIngredientsWithProducts(recipe, getIngredientsFro
         // Wait for all searches to complete in parallel
         const ingredientProducts = await Promise.all(searchPromises);
         console.log(`🎯 Completed ${ingredientProducts.length} ingredient searches in parallel`);
-        
+
         return {
             recipe: ingredientsData.recipe || recipe,
             totalIngredients: essentialIngredients.length,

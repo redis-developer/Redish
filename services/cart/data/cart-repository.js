@@ -30,17 +30,17 @@ export default class CartRepository {
                 };
             }
 
-            const cartKey = `cart:${sessionId}`;
+            const userKey = `users:${sessionId}`;
             
             // Check if item already exists in cart
-            const existingItem = await client.json.get(cartKey, {
-                path: `$.items[?(@.productId=='${productId}')]`
+            const existingItem = await client.json.get(userKey, {
+                path: `$.cart.items[?(@.productId=='${productId}')]`
             });
 
             if (existingItem && existingItem.length > 0) {
                 // Update quantity if item exists
                 const currentQuantity = existingItem[0].quantity;
-                await client.json.set(cartKey, `$.items[?(@.productId=='${productId}')].quantity`, currentQuantity + quantity);
+                await client.json.set(userKey, `$.cart.items[?(@.productId=='${productId}')].quantity`, currentQuantity + quantity);
             } else {
                 // Add new item to cart
                 const cartItem = {
@@ -53,23 +53,24 @@ export default class CartRepository {
                     addedAt: new Date().toISOString()
                 };
 
-                // Initialize cart if it doesn't exist
-                const cartExists = await client.exists(cartKey);
-                if (!cartExists) {
-                    await client.json.set(cartKey, '$', {
-                        sessionId: sessionId,
+                // Check if cart exists in user data, initialize if needed
+                const cartData = await client.json.get(userKey, { path: '$.cart' });
+                
+                if (!cartData || cartData.length === 0 || !cartData[0].items) {
+                    // Initialize cart within existing user document
+                    await client.json.set(userKey, '$.cart', {
                         items: [cartItem],
                         createdAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString()
                     });
                 } else {
-                    await client.json.arrAppend(cartKey, '$.items', cartItem);
-                    await client.json.set(cartKey, '$.updatedAt', new Date().toISOString());
+                    await client.json.arrAppend(userKey, '$.cart.items', cartItem);
+                    await client.json.set(userKey, '$.cart.updatedAt', new Date().toISOString());
                 }
             }
 
             // Set expiration (24 hours)
-            await client.expire(cartKey, 24 * 60 * 60);
+            await client.expire(userKey, 24 * 60 * 60);
 
             // Get updated cart summary
             const cart = await this.getCart(sessionId);
@@ -101,10 +102,11 @@ export default class CartRepository {
      */
     async getCart(sessionId) {
         try {
-            const cartKey = `cart:${sessionId}`;
-            const cart = await client.json.get(cartKey);
-
-            if (!cart) {
+            const userKey = `users:${sessionId}`;
+            const cartData = await client.json.get(userKey, { path: '$.cart' });
+            
+            // If no user or no cart data
+            if (!cartData || cartData.length === 0 || !cartData[0]) {
                 return {
                     success: true,
                     sessionId: sessionId,
@@ -117,6 +119,8 @@ export default class CartRepository {
                 };
             }
 
+            const cart = cartData[0];
+            
             // Calculate totals
             const items = cart.items || [];
             const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -153,16 +157,18 @@ export default class CartRepository {
      */
     async removeFromCart(sessionId, productId) {
         try {
-            const cartKey = `cart:${sessionId}`;
+            const userKey = `users:${sessionId}`;
             
             // Get current cart
-            const cart = await client.json.get(cartKey);
-            if (!cart || !cart.items) {
+            const cartData = await client.json.get(userKey, { path: '$.cart' });
+            if (!cartData || cartData.length === 0 || !cartData[0] || !cartData[0].items) {
                 return {
                     success: false,
                     error: 'Cart is empty or does not exist'
                 };
             }
+            
+            const cart = cartData[0];
 
             // Find and remove the item
             const filteredItems = cart.items.filter(item => item.productId !== productId);
@@ -175,8 +181,8 @@ export default class CartRepository {
             }
 
             // Update cart
-            await client.json.set(cartKey, '$.items', filteredItems);
-            await client.json.set(cartKey, '$.updatedAt', new Date().toISOString());
+            await client.json.set(userKey, '$.cart.items', filteredItems);
+            await client.json.set(userKey, '$.cart.updatedAt', new Date().toISOString());
 
             const removedItem = cart.items.find(item => item.productId === productId);
             
@@ -202,21 +208,24 @@ export default class CartRepository {
      */
     async clearCart(sessionId) {
         try {
-            const cartKey = `cart:${sessionId}`;
+            const userKey = `users:${sessionId}`;
             
-            const cart = await client.json.get(cartKey);
-            if (!cart || !cart.items || cart.items.length === 0) {
+            const cartData = await client.json.get(userKey, { path: '$.cart' });
+            if (!cartData || cartData.length === 0 || !cartData[0] || !cartData[0].items || cartData[0].items.length === 0) {
                 return {
                     success: true,
                     message: 'Cart is already empty',
                     itemsCleared: 0
                 };
             }
+            
+            const cart = cartData[0];
 
             const itemCount = cart.items.length;
             
-            // Clear the cart
-            await client.del(cartKey);
+            // Clear the cart items only (keep user data)
+            await client.json.set(userKey, '$.cart.items', []);
+            await client.json.set(userKey, '$.cart.updatedAt', new Date().toISOString());
             
             return {
                 success: true,
