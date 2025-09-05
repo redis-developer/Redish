@@ -4,9 +4,9 @@ import { getProductById } from '../products/domain/product-service.js';
 
 const router = Router();
 
-/* GET home page. */
+/* GET home page - directly serve the chat interface */
 router.get('/', function(req, res, next) {
-	res.render('index', { app_name: CONFIG.appName || 'Redish' });
+	res.render('chat', { app_name: CONFIG.appName || 'Redish' });
 });
 
 router.get('/app', function(req, res, next) {
