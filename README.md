@@ -160,6 +160,12 @@ modules/
 
 ---
 
+## Maintainers
+
+- **Ashwin Hariharan** - [@booleanhunter](https://github.com/booleanhunter)
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.

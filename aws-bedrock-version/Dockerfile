@@ -3,11 +3,14 @@ FROM node:18
 # Create app directory
 WORKDIR /app
 
-# Copy all files
-COPY . .
+# Copy package files first for better caching
+COPY package*.json ./
 
 # Install server dependencies
 RUN npm install
+
+# Copy all files
+COPY . .
 
 # Expose ports
 EXPOSE 3000

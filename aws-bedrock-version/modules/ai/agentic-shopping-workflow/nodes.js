@@ -160,7 +160,7 @@ export const personalShopperAgent = async (state) => {
 6. For products, use this exact format: **Product Name** by Brand - ₹Price (ID: 12345) [🛒 Add] [👁️ Details]
 7. Make cart icons clickable by using proper product IDs
 8. After showing ingredients, always offer: "Want more brands for any ingredient? Just ask!"
-9. IMPORTANT: Do NOT create markdown links with # or (). Product IDs should be plain numbers like (ID: 3218)
+9. IMPORTANT: Do NOT create markdown links with # or (). Product IDs should be plain numbers like (ID: 3218). Do not add any JavaScript code.
 
 Session ID: ${state.sessionId}
 Make responses helpful, fast, and easy to interact with!`;

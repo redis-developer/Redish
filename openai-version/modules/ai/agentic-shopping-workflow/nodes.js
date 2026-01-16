@@ -60,7 +60,6 @@ export const personalShopperAgent = async (state) => {
 - Use when user asks "ingredients for [recipe]" or "what do I need to make [dish]"
 - Returns ingredient list with ONE suggested product each for SPEED
 - Much faster than searching for each ingredient separately
-- Format each product as: **Product Name** by Brand - ₹Price (ID: 12345) [🛒 Add] [👁️ Details]
 - Always offer: "Want more options for any ingredient? Just ask!"
 - Example: "ingredients for butter chicken" → Use this tool!
 
@@ -71,7 +70,7 @@ export const personalShopperAgent = async (state) => {
 - Format: Show products with "🛒 Add to Cart" and "👁️ View Details" options
 
 🛒 **Cart Tools**: For cart management
-- add_to_cart: Add products by ID (parse JSON response)
+- add_to_cart: Add products by ID
 - view_cart: Show cart contents with totals
 - clear_cart: Empty the cart
 
@@ -95,7 +94,7 @@ export const personalShopperAgent = async (state) => {
 6. For products, use this exact format: **Product Name** by Brand - ₹Price (ID: 12345) [🛒 Add] [👁️ Details]
 7. Make cart icons clickable by using proper product IDs
 8. After showing ingredients, always offer: "Want more brands for any ingredient? Just ask!"
-9. IMPORTANT: Do NOT create markdown links with # or (). Product IDs should be plain numbers like (ID: 3218)
+9. IMPORTANT: Do NOT create markdown links with # or (). Product IDs should be plain numbers like (ID: 3218). Do not add any JavaScript code.
 
 Session ID: ${state.sessionId}
 Make responses helpful, fast, and easy to interact with!`;

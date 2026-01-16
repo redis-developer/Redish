@@ -8,13 +8,14 @@ This version demonstrates building shopping AI agents using OpenAI's GPT-4 for c
 
 ---
 
-## Prerequisites
+## Tech Stack
 
-- **Redis**:
-  - Use [Redis Cloud](https://redis.io) (no installation required)
-- **Redis LangCache API**: [Get LangCache credentials](https://redis.io/langcache/)
-- **OpenAI API Key**: [Create an API key](https://platform.openai.com/account/api-keys)
-- **Node.js (v18 or higher)**: [Download & Install Node.js](https://nodejs.org/). Alternatively, use a docker-based setup.
+- **[Node.js (v18+)](https://nodejs.org/)** + **Express** - Backend runtime and API framework
+- **[Redis](https://redis.io)** - Product store, conversational history, and semantic caching
+- **[Redis LangCache API](https://redis.io/langcache/)** - Semantic caching for LLM responses
+- **LangGraph** - AI workflow orchestration
+- **[OpenAI API](https://platform.openai.com/account/api-keys)** - GPT-4 for intelligent responses + embeddings
+- **HTML + CSS + Vanilla JS** - Frontend UI
 
 ## Getting Started
 
@@ -70,9 +71,19 @@ Skip manual setup and run everything using Docker:
 
 ```bash
 docker compose up
+
+# Load product data (first time only)
+docker compose exec redish-app npm run load-products
+```
+
+**View logs:**
+
+```bash
+docker compose logs -f redish-app
 ```
 
 To stop the containers:
+
 ```bash
 docker compose down -v
 ```
@@ -80,16 +91,6 @@ docker compose down -v
 ### 3. Access the app
 
 Visit http://localhost:3000 in your browser (or use the port specified in `.env`).
-
----
-
-## Tech Stack
-
-- **Node.js** + **Express** (Backend API)
-- **Redis** (Product store, conversational history, and semantic caching)
-- **LangGraph** (AI workflow orchestration)
-- **OpenAI API** (GPT-4 for intelligent responses + embeddings)
-- **HTML + CSS + Vanilla JS** (Frontend UI)
 
 ---
 

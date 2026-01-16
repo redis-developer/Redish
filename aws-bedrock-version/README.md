@@ -2,21 +2,20 @@
 
 **Setup instructions for the AWS Bedrock-powered version of Redish.**
 
-This enhanced version demonstrates building shopping AI agents using AWS Bedrock's Claude 3.5 Sonnet for conversational AI, Titan Text Embeddings V2 for vector search, and includes additional database services and AI guardrails.
+This version demonstrates building shopping AI agents using AWS Bedrock's Claude 3.5 Sonnet for conversational AI, Titan Text Embeddings V2 for vector search, and implements guardrails using Bedrock Guardrails.
 
 > 📖 **For complete project information**, see the [main README](../README.md)
 
 ---
 
-## Prerequisites
+## Tech Stack
 
-- **Redis**:
-  - Use [Redis Cloud](https://redis.io) (no installation required)
-- **Redis LangCache API**: [Get LangCache credentials](https://redis.io/langcache/)
-- **AWS Bedrock Access**: [Set up AWS credentials](https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.html)
-  - AWS Access Key ID and Secret Access Key
-  - Bedrock model access (Claude 3.5 Sonnet, Titan Text Embeddings V2)
-- **Node.js (v18 or higher)**: [Download & Install Node.js](https://nodejs.org/). Alternatively, use a docker-based setup.
+- **[Node.js (v18+)](https://nodejs.org/)** + **Express** - Backend runtime and API framework
+- **[Redis](https://redis.io)** - Product store, conversational history, and semantic caching
+- **[Redis LangCache API](https://redis.io/langcache/)** - Semantic caching for LLM responses
+- **LangGraph** - AI workflow orchestration
+- **[AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.html)** - Claude 3.5 Sonnet for intelligent responses + Titan Text Embeddings V2 for vector search
+- **HTML + CSS + Vanilla JS** - Frontend UI
 
 ## Getting Started
 
@@ -100,6 +99,15 @@ Skip manual setup and run everything using Docker:
 
 ```bash
 docker compose up
+
+# Load product data (first time only)
+docker compose exec redish-app npm run load-products
+```
+
+**View logs:**
+
+```bash
+docker compose logs -f redish-app
 ```
 
 To stop the containers:
@@ -111,16 +119,6 @@ docker compose down -v
 ### 3. Access the app
 
 Visit http://localhost:3000 in your browser (or use the port specified in `.env`).
-
----
-
-## Tech Stack (This Version)
-
-- **Node.js** + **Express** (Backend API)
-- **Redis** (Product store, conversational history, and semantic caching)
-- **LangGraph** (AI workflow orchestration)
-- **AWS Bedrock** (Claude 3.5 Sonnet + Titan Text Embeddings V2)
-- **HTML + CSS + Vanilla JS** (Frontend UI)
 
 ---
 
