@@ -1,5 +1,5 @@
 import ProductRepository from '../data/product-repository.js';
-import { AppError, HttpStatusCode } from '#lib/errors.js';
+import { AppError, ErrorType } from '#lib/errors.js';
 import { generateEmbeddings } from '#modules/ai/helpers/embeddings.js';
 
 const productRepository = new ProductRepository();

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { addItemToCart, getCart, removeItemFromCart, clearCart } from '../domain/cart-service.js';
+import { HttpStatusCode } from '#lib/errors.js';
 
 const router = Router();
 
@@ -8,7 +9,7 @@ router.post('/add', async function(req, res, next) {
     const { sessionId, productId, quantity = 1 } = req.body;
 
     if (!sessionId || !productId) {
-        return res.status(400).json({ 
+        return res.status(HttpStatusCode.BAD_REQUEST).json({ 
             success: false, 
             error: 'Missing sessionId or productId' 
         });
@@ -27,7 +28,7 @@ router.get('/:sessionId', async function(req, res, next) {
     const { sessionId } = req.params;
 
     if (!sessionId) {
-        return res.status(400).json({ 
+        return res.status(HttpStatusCode.BAD_REQUEST).json({ 
             success: false, 
             error: 'Missing sessionId' 
         });

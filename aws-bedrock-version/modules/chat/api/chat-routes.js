@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { endUserSession, processShoppingInquiry } from '../domain/chat-service.js';
+import { HttpStatusCode } from '#lib/errors.js';
 
 const router = Router();
 
@@ -8,7 +9,7 @@ router.post('/', async function(req, res, next) {
     const { message, sessionId, chatId, useSmartRecall } = req.body;
 
     if (!message || !sessionId) {
-        return res.status(400).json({ error: 'Missing message or sessionId' });
+        return res.status(HttpStatusCode.BAD_REQUEST).json({ error: 'Missing message or sessionId' });
     }
 
     try {
@@ -26,7 +27,7 @@ router.post('/end-session', async function(req, res, next) {
     const { sessionId } = req.body;
 
     if (!sessionId) {
-        return res.status(400).json({ error: 'Missing sessionId' });
+        return res.status(HttpStatusCode.BAD_REQUEST).json({ error: 'Missing sessionId' });
     }
 
     try {

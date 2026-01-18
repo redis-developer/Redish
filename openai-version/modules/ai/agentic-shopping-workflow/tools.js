@@ -7,9 +7,7 @@ import { z } from "zod";
 // Import service functions
 import { findProductsForIngredients, searchProducts } from '#modules/products/domain/product-service.js';
 import { addItemsToCart, getCart, clearCart } from '#modules/cart/domain/cart-service.js';
-
-// Import helper functions
-import { AppError, HttpStatusCode } from '#lib/errors.js';
+import { AppError, ErrorType } from '#lib/errors.js';
 import CONFIG from '#config';
 
 /**
@@ -53,10 +51,13 @@ Rules:
         return JSON.parse(response.content);
     } catch (parseError) {
         throw new AppError(
-            'LLM_PARSE_ERROR',
+            `ai.${ErrorType.INVALID_INPUT}`,
             'Could not parse recipe ingredients from LLM response',
-            HttpStatusCode.BAD_REQUEST,
-            'Could not parse recipe ingredients. Please try rephrasing your recipe request.'
+            ErrorType.INVALID_INPUT,
+            {
+                publicMessage: 'Could not parse recipe ingredients. Please try rephrasing your recipe request.',
+                data: { parseError: parseError.message }
+            }
         );
     }
 }
@@ -75,10 +76,12 @@ export const fastRecipeIngredientsTool = tool(
 
             if (!ingredientsData.ingredients) {
                 throw new AppError(
-                    'LLM_NO_INGREDIENTS',
+                    `ai.${ErrorType.INVALID_INPUT}`,
                     'No ingredients received from LLM',
-                    HttpStatusCode.BAD_REQUEST,
-                    'Could not extract ingredients from the recipe. Please try rephrasing your request.'
+                    ErrorType.INVALID_INPUT,
+                    {
+                        publicMessage: 'Could not extract ingredients from the recipe. Please try rephrasing your request.'
+                    }
                 );
             }
 

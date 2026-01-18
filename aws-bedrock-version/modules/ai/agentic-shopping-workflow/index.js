@@ -87,58 +87,47 @@ export function getWorkflowExecutionSummary(graphResult) {
  * Main function for running the grocery shopping agent workflow
  */
 export async function runShoppingAgentWorkflow(sessionId, chatId, message, useSmartRecall) {
-    try {
-        const rawHistory = await chatRepository.getOrCreateChatHistory(sessionId, chatId);
+    const rawHistory = await chatRepository.getOrCreateChatHistory(sessionId, chatId);
 
-        // Convert raw history to LangChain message format
-        const messages = rawHistory.map((msg) => {
-            return msg.role === "user"
-                ? new HumanMessage(msg.content)
-                : new AIMessage(msg.content);
-        });
+    // Convert raw history to LangChain message format
+    const messages = rawHistory.map((msg) => {
+        return msg.role === "user"
+            ? new HumanMessage(msg.content)
+            : new AIMessage(msg.content);
+    });
 
-        // Add the new user message
-        const userMessage = new HumanMessage(message);
-        messages.push(userMessage);
+    // Add the new user message
+    const userMessage = new HumanMessage(message);
+    messages.push(userMessage);
 
-        // Run the workflow
-        const result = await shoppingWorkflowGraph.invoke({
-            sessionId,
-            messages,
-        });
+    // Run the workflow
+    const result = await shoppingWorkflowGraph.invoke({
+        sessionId,
+        messages,
+    });
 
-        // Get execution summary for logging
-        const executionSummary = getWorkflowExecutionSummary(result);
+    // Get execution summary for logging
+    const executionSummary = getWorkflowExecutionSummary(result);
 
-        const finalReply = result.result || result.output;
+    const finalReply = result.result || result.output;
 
-        const queryResult = {
-            isCachedResponse: result.cacheStatus === "hit",
-            content: finalReply,
-        };
+    const queryResult = {
+        isCachedResponse: result.cacheStatus === "hit",
+        content: finalReply,
+    };
 
-        // Save messages back to storage
-        await chatRepository.saveChatMessage(sessionId, chatId, {
-            role: "user",
-            content: message,
-        });
+    // Save messages back to storage
+    await chatRepository.saveChatMessage(sessionId, chatId, {
+        role: "user",
+        content: message,
+    });
 
-        await chatRepository.saveChatMessage(sessionId, chatId, {
-            role: "assistant",
-            content: finalReply,
-        });
+    await chatRepository.saveChatMessage(sessionId, chatId, {
+        role: "assistant",
+        content: finalReply,
+    });
 
-        return queryResult;
-        
-    } catch (error) {
-        console.error("❌ Error in shopping agent workflow:", error);
-        
-        // Return fallback response
-        return {
-            isCachedResponse: false,
-            content: "I apologize, but I'm having trouble processing your shopping request right now. Please try asking about recipe ingredients, searching for products, or managing your cart."
-        };
-    }
+    return queryResult;
 }
 
 async function visualizeGraph(graph) {

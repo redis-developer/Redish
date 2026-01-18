@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getProductById } from '../domain/product-service.js';
 import CONFIG from '#config';
+import { HttpStatusCode } from '#lib/errors.js';
 
 const router = Router();
 
@@ -12,9 +13,9 @@ router.get('/:productId', async function(req, res, next) {
 		const product = await getProductById(productId);
 		
 		if (!product) {
-			return res.status(404).render('error', { 
+			return res.status(HttpStatusCode.NOT_FOUND).render('error', { 
 				message: 'Product not found',
-				error: { status: 404 }
+				error: { status: HttpStatusCode.NOT_FOUND }
 			});
 		}
 
@@ -24,9 +25,9 @@ router.get('/:productId', async function(req, res, next) {
 		});
 	} catch (error) {
 		console.error('Error loading product page:', error);
-		res.status(500).render('error', {
+		res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).render('error', {
 			message: 'Failed to load product',
-			error: { status: 500 }
+			error: { status: HttpStatusCode.INTERNAL_SERVER_ERROR }
 		});
 	}
 });
