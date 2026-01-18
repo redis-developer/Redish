@@ -10,7 +10,7 @@ This version demonstrates building shopping AI agents using OpenAI's GPT-4 for c
 
 ## Tech Stack
 
-- **[Node.js (v18+)](https://nodejs.org/)** + **Express** - Backend runtime and API framework
+- **[Node.js (v24+)](https://nodejs.org/)** + **Express** - Backend runtime and API framework
 - **[Redis](https://redis.io)** - Product store, conversational history, and semantic caching
 - **[Redis LangCache API](https://redis.io/langcache/)** - Semantic caching for LLM responses
 - **LangGraph** - AI workflow orchestration

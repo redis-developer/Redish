@@ -3,11 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
+  },
   "imports": {
     "#modules/*": "./modules/*",
     "#lib/*": "./lib/*",
     "#config": "./config.js"
-  },  "scripts": {
+  },
+  "scripts": {
     "start": "node index.js",
     "load-products": "node scripts/load-products.js",
     "debug-config": "node scripts/debug-config.js"
